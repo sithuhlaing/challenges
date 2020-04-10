@@ -1,0 +1,14 @@
+{
+  "name": "challenge-nodejs",
+  "version": "1.0.0",
+  "description": "Welcome to the Pomelo NodeJS challenge!",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Si Thu Hlaing",
+  "license": "ISC",
+  "dependencies": {
+    "@hapi/hapi": "^19.1.1"
+  }
+}
