@@ -1,0 +1,150 @@
+doctype html
+html(lang="en")
+  head
+    title #{title}
+    link(
+      rel="stylesheet", 
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css", 
+      integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh", 
+      crossorigin="anonymous"
+    )
+    script(
+      src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"
+    )
+    script(
+      src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js",
+      integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo", 
+      crossorigin="anonymous"
+    )
+    script(
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js", 
+      integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6", 
+      crossorigin="anonymous"
+    )
+  body
+    .container
+      .jumbotron.mt-3
+        h1 Search Repositories
+        .input-group.mb-3
+          input(
+            id="keyword",
+            class="form-control"
+            type="text", 
+            placeholder="respository", 
+            aria-label="respository",
+            aria-describedby="button-addon2"
+          )
+          .input-group-append
+            button(
+              class="btn btn-outline-secondary"
+              type="button",
+              id="search"
+            ) Search
+      .table-responsive-sm
+        table.table.table-striped
+          thead
+            tr
+              th(scope="col") #
+              th(scope="col") Name
+              th(scope="col") Description
+              th(scope="col") URL
+          tbody
+        nav(
+          aria-label="Page navigation"
+        )
+          ul.pagination
+            li.page-item
+              a(
+                class="page-link",
+                href="#"
+              ) Previous
+            li.page-item
+              a(
+                class="page-link",
+                href="#"
+              ) 1
+            li.page-item
+              a(
+                class="page-link",
+                href="#"
+              ) 2
+            li.page-item
+              a(
+                class="page-link",
+                href="#"
+              ) 3
+            li.page-item
+              a(
+                class="page-link",
+                href="#"
+              ) 4
+            li.page-item
+              a(
+                class="page-link",
+                href="#"
+              ) 5
+            li.page-item
+              a(
+                class="page-link",
+                href="#"
+              ) 6
+            li.page-item
+              a(
+                class="page-link",
+                href="#"
+              ) 7
+            li.page-item
+              a(
+                class="page-link",
+                href="#"
+              ) 8
+            li.page-item
+              a(
+                class="page-link",
+                href="#"
+              ) 9
+            li.page-item
+              a(
+                class="page-link",
+                href="#"
+              ) 10
+            li.page-item
+              a(
+                class="page-link",
+                href="#"
+              ) Next
+
+    script(type='text/javascript').
+      const per_page = 10; 
+      let page = 1;
+      $('#search').click(function() {
+        const q = $('#keyword').val();
+        if(q === '') {
+          alert('plese type keywords');
+        } else {
+          $.post( 
+            "search", 
+            { 
+              q,
+              per_page,
+              page
+            }, 
+            function( data ) {
+              let page_count = ~~(data.total_count / 10);
+              if(data.total_count % 10 !== 0){
+                page_count++;
+              }
+              console.log(page_count);
+              const tr = data.items.map(x => {
+                const id = `<th scope="row">${x.id}</th>`;
+                const name = `<td>${x.name}</td>`;
+                const description = `<td>${x.description}</td>`;
+                const url = `<td><a href="${x.html_url}">${x.name}</a></td>`;
+                return `<tr> ${id + name + description + url} </tr>`;
+              });
+              $('tbody').empty().append(tr);
+            }
+          );
+        }
+        
+      });

@@ -1,30 +1,20 @@
 'use strict';
 
-const Hapi = require('@hapi/hapi');
-const View = require('@hapi/vision');
-const pug = require('pug');
-const config = require('./settings');
-const route = require('./routes');
+const Server = require('./server');
 
-const init = async () => {
-  // create server
-  const server = Hapi.server(config);
-  // register plugins
-  await server.register(View);
-  server.views({
-    engines: {
-      pug
-    },
-    relativeTo: './public',
-    path: 'views'
-  });
-  // add routes
-  server.route(route.helloRoute);
-  server.route(route.parseRoute);
-  server.route(route.viewRoute);
+async function start() {
 
-  await server.start();
-  console.log('Server running on %s', server.info.uri);
+  let server = null;
+  try {
+    server = await Server.deployment();
+    await server.start();
+  }
+  catch (err) {
+    console.log(err);
+    process.exit(1);
+  }
+
+  console.log('Server running at:', server.info.uri);
 };
 
 process.on('unhandledRejection', (err) => {
@@ -32,4 +22,4 @@ process.on('unhandledRejection', (err) => {
   process.exit(1);
 });
 
-init();
+start();

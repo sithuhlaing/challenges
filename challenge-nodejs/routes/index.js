@@ -1,12 +1,8 @@
-const HelloController = require('../controllers/hello-controller');
-const parseController = require('../controllers/parse-controller');
-const searchController = require('../controllers/search-controller');
+const Path = require('path');
 
-const helloRoute = {
-  method: 'GET',
-  path: '/',
-  handler: HelloController,
-}
+const parseController = require('../controllers/parse-controller');
+const viewController = require('../controllers/view-controller');
+const searchController = require('../controllers/search-controller');
 
 const parseRoute = {
   method: 'POST',
@@ -16,10 +12,30 @@ const parseRoute = {
 
 const viewRoute = {
   method: 'GET',
+  path: '/',
+  handler: viewController
+}
+
+const searchRoute = {
+  method: 'POST',
   path: '/search',
   handler: searchController
 }
 
-module.exports.helloRoute = helloRoute;
-module.exports.parseRoute = parseRoute;
-module.exports.viewRoute = viewRoute;
+const jsRoute = {
+  method: 'GET',
+  path: '/public/{param*}',
+  handler: {
+    directory: {
+      path: Path.normalize(__dirname + '/public')
+    }
+  }
+}
+// path: '/{param*}',
+    
+module.exports = [
+  parseRoute,
+  viewRoute,
+  searchRoute,
+  jsRoute
+]

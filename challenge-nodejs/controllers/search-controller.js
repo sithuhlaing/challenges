@@ -1,5 +1,23 @@
-const searchViewController = (request, h) => {
-  return h.view('index', { title: 'Homepage', message: 'Welcome' });
+const axios = require('axios');
+
+const getRepositories = async ({q, page, per_page}) => {
+  try {
+    return await axios
+      .get('https://api.github.com/search/repositories', { 
+        params: { 
+          q,
+          per_page,
+          page,
+        } 
+      });
+  } catch (error) {
+    console.error(error);
+  }
 }
 
-module.exports = searchViewController;
+const searchController = async (request, h) => {
+  const { data } = await getRepositories(request.payload);
+  return data;
+}
+
+module.exports = searchController;

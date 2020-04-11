@@ -6,6 +6,7 @@
 //   parent_id: Joi.number(),
 // });
 
+// parse for parent and combine with parent
 const parseNode = (parent, objs) => {
   const children = objs.filter(x => x.parent_id === parent.id);
   parent.children = children;
@@ -15,6 +16,7 @@ const parseNode = (parent, objs) => {
   return parent;
 }
 
+// to object array
 const getObjs = (obj) => {
   let objs = [];
 
@@ -26,9 +28,13 @@ const getObjs = (obj) => {
 }
 
 const parseController = (request, h) => {
+  // get from request json
   const json = request.payload;
+  // parse the object
   const objs = getObjs(json);
+  // for root object
   const root = objs.find(x => x.parent_id === null);
+  // parse it
   return parseNode(root, objs);
 }
 

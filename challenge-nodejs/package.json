@@ -4,11 +4,20 @@
   "description": "Welcome to the Pomelo NodeJS challenge!",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon -e js,pug index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Si Thu Hlaing",
   "license": "ISC",
   "dependencies": {
-    "@hapi/hapi": "^19.1.1"
+    "@hapi/hapi": "^19.1.1",
+    "@hapi/inert": "^6.0.1",
+    "@hapi/vision": "^6.0.0",
+    "axios": "^0.19.2",
+    "pug": "^2.0.4"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.3"
   }
 }
