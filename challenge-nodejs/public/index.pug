@@ -53,98 +53,80 @@ html(lang="en")
           aria-label="Page navigation"
         )
           ul.pagination
-            li.page-item
-              a(
-                class="page-link",
-                href="#"
-              ) Previous
-            li.page-item
-              a(
-                class="page-link",
-                href="#"
-              ) 1
-            li.page-item
-              a(
-                class="page-link",
-                href="#"
-              ) 2
-            li.page-item
-              a(
-                class="page-link",
-                href="#"
-              ) 3
-            li.page-item
-              a(
-                class="page-link",
-                href="#"
-              ) 4
-            li.page-item
-              a(
-                class="page-link",
-                href="#"
-              ) 5
-            li.page-item
-              a(
-                class="page-link",
-                href="#"
-              ) 6
-            li.page-item
-              a(
-                class="page-link",
-                href="#"
-              ) 7
-            li.page-item
-              a(
-                class="page-link",
-                href="#"
-              ) 8
-            li.page-item
-              a(
-                class="page-link",
-                href="#"
-              ) 9
-            li.page-item
-              a(
-                class="page-link",
-                href="#"
-              ) 10
-            li.page-item
-              a(
-                class="page-link",
-                href="#"
-              ) Next
 
     script(type='text/javascript').
+      //- localStorage.setItem('per_page', 10);
+      localStorage.setItem('page', 1);
       const per_page = 10; 
-      let page = 1;
+      let page = localStorage.getItem('page');
+
+      function onPage(page) {
+        localStorage.setItem('page', page);
+        const q = localStorage.getItem('q');
+        search({ q, per_page, page });
+      }
+
+      function pagination(length, index) {
+        const page = parseInt(localStorage.getItem('page'));
+        const lis = [...Array(length).keys()]
+                    .map(i => 
+                      `<li class="page-item ${i + index === page ? 'active': ''}">
+                        <button class="page-link" type="button" onclick="onPage(${i + index})">${i + index}</button>
+                      </li>`
+                    );
+        const previous = `<li class="page-item ${page === 1 ? 'disabled': ''}">
+                            <button class="page-link" type="button" onclick="onPage(${page - 1})">Previous</button>
+                          </li>`;
+        const next = `<li class="page-item ${page === 100 ? 'disabled': ''}">
+                        <button class="page-link" type="button" onclick="onPage(${page + 1})">Next</button>
+                      </li>`;
+        $('.pagination').empty().append(previous, lis, next);
+      }
+
+      function search(params) {
+        $.post("search", params, function( data ) {
+          // create data in table
+          createData(data.items);
+          // create page count 
+          const page = parseInt(localStorage.getItem('page'));
+          const page_count = pageCount(data.total_count);
+          //- let length = -1;
+          let offset = -1;
+          if(page % per_page === 0) {
+            offset = page - per_page + 1;
+          } else {
+            offset = (~~(page / per_page) * 10) + 1;
+          }
+          const length = (page_count - offset) <= (per_page - 1) ? page_count - offset : per_page;
+          pagination(length, offset);
+        });
+      }
+
+      function pageCount(total_count) {
+        let page_count = ~~(total_count / per_page);
+        if(total_count % per_page !== 0){
+          page_count++;
+        }
+        return page_count;
+      }
+
+      function createData(items){
+        const tr = items.map(x => {
+              const id = `<th scope="row"> ${ x.id } </th>`;
+              const name = `<td> ${ x.name } </td>`;
+              const description = `<td> ${ x.description } </td>`;
+              const url = `<td><a href="${ x.html_url }">${ x.name }</a></td>`;
+              return `<tr> ${id + name + description + url} </tr>`;
+            });
+        $('tbody').empty().append(tr);
+      }
+
       $('#search').click(function() {
         const q = $('#keyword').val();
         if(q === '') {
           alert('plese type keywords');
         } else {
-          $.post( 
-            "search", 
-            { 
-              q,
-              per_page,
-              page
-            }, 
-            function( data ) {
-              let page_count = ~~(data.total_count / 10);
-              if(data.total_count % 10 !== 0){
-                page_count++;
-              }
-              console.log(page_count);
-              const tr = data.items.map(x => {
-                const id = `<th scope="row">${x.id}</th>`;
-                const name = `<td>${x.name}</td>`;
-                const description = `<td>${x.description}</td>`;
-                const url = `<td><a href="${x.html_url}">${x.name}</a></td>`;
-                return `<tr> ${id + name + description + url} </tr>`;
-              });
-              $('tbody').empty().append(tr);
-            }
-          );
+          localStorage.setItem('q', q);
+          search({ q, per_page, page });
         }
-        
       });
