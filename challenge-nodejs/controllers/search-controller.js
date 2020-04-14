@@ -1,4 +1,11 @@
 const axios = require('axios');
+const Joi = require('@hapi/joi');
+
+const schema = Joi.object({
+  q: Joi.string().required(),
+  per_page: Joi.number().required(),
+  page: Joi.number().required()
+})
 
 const getRepositories = async ({q, page, per_page}) => {
   try {
@@ -20,4 +27,5 @@ const searchController = async (request, h) => {
   return data;
 }
 
-module.exports = searchController;
+module.exports.searchController = searchController;
+module.exports.schema = schema;

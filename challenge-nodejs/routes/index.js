@@ -1,13 +1,21 @@
 const Path = require('path');
 
-const parseController = require('../controllers/parse-controller');
+const { schema:parseSchema, parseController } = require('../controllers/parse-controller');
+const { schema:searchSchema, searchController} = require('../controllers/search-controller');
 const viewController = require('../controllers/view-controller');
-const searchController = require('../controllers/search-controller');
 
 const parseRoute = {
   method: 'POST',
   path: '/',
-  handler: parseController
+  options: {
+    handler: parseController,
+    description: 'Parse JSON',
+    notes: 'Returns a JSON with root',
+    tags: ['api'],
+    validate: {
+      payload: parseSchema
+    }
+  }
 }
 
 const viewRoute = {
@@ -18,8 +26,16 @@ const viewRoute = {
 
 const searchRoute = {
   method: 'POST',
-  path: '/search',
-  handler: searchController
+  path: '/search',  
+  options: {
+    handler: searchController,
+    description: 'search GitHub Repositories',
+    notes: 'Returns list of GitHub Repositories',
+    tags: ['api'],
+    validate: {
+      payload: searchSchema 
+    }
+  }
 }
 
 const jsRoute = {
@@ -31,7 +47,6 @@ const jsRoute = {
     }
   }
 }
-// path: '/{param*}',
     
 module.exports = [
   parseRoute,

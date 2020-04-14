@@ -1,10 +1,20 @@
-// const Obj = Joi.object({
-//   id: Joi.number().required(),
-//   title: Joi.string().required(),
-//   level: Joi.number().required(),
-//   children: Joi.array(),
-//   parent_id: Joi.number(),
-// });
+const Joi = require('@hapi/joi');
+
+const element = Joi.array().items(
+  Joi.object({
+    id: Joi.number().optional(),
+    title: Joi.string().optional(),
+    level: Joi.number().optional(),
+    children: Joi.array().optional(),
+    parent_id: Joi.number().optional().allow(null),
+  })
+)
+
+const schema = Joi.object({
+  '0': element,
+  '1': element,
+  '2': element,
+})
 
 // parse for parent and combine with parent
 const parseNode = (parent, objs) => {
@@ -38,4 +48,5 @@ const parseController = (request, h) => {
   return parseNode(root, objs);
 }
 
-module.exports = parseController;
+module.exports.parseController = parseController;
+module.exports.schema = schema;

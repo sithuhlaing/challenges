@@ -2,11 +2,12 @@
 'use strict';
 
 const Hapi = require('@hapi/hapi');
-const View = require('@hapi/vision');
-const inert = require('@hapi/inert');
-
+const Vision = require('@hapi/vision');
+const Inert = require('@hapi/inert');
+const HapiSwagger = require('hapi-swagger');
 const pug = require('pug');
 
+const Pack = require('./package');
 const config = require('./settings');
 const routes = require('./routes');
 
@@ -15,8 +16,20 @@ exports.deployment = async () => {
   const server = Hapi.server(config);
 
   // register plugins
-  await server.register(View);
-  await server.register(inert);
+  await server.register([
+    Inert,
+    Vision,
+    {
+      plugin: HapiSwagger,
+      options: {
+        info: {
+          title: 'Test API Documentation',
+          version: Pack.version,
+        },
+      }
+    }
+  ]);
+
   server.views({
     engines: {
       pug
