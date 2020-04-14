@@ -2,19 +2,17 @@
 
 const Server = require('./server');
 
-async function start() {
+const start = async () => {
+  const server = await Server.deployment();
+  await server.start();
+  console.log(`Server running at: ${server.info.uri}`);
+  return server;
+}
 
-  let server = null;
-  try {
-    server = await Server.deployment();
-    await server.start();
-  }
-  catch (err) {
-    console.log(err);
-    process.exit(1);
-  }
-
-  console.log('Server running at:', server.info.uri);
+const init = async () => {
+  const server = await Server.deployment();
+  await server.initialize();
+  return server;
 };
 
 process.on('unhandledRejection', (err) => {
@@ -23,3 +21,6 @@ process.on('unhandledRejection', (err) => {
 });
 
 start();
+
+module.exports.start = start;
+module.exports.init = init;

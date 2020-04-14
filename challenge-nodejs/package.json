@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon -e js,pug index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "lab"
   },
   "author": "Si Thu Hlaing",
   "license": "ISC",
@@ -20,6 +20,8 @@
     "pug": "^2.0.4"
   },
   "devDependencies": {
+    "@hapi/code": "^8.0.1",
+    "@hapi/lab": "^22.0.4",
     "nodemon": "^2.0.3"
   }
 }
